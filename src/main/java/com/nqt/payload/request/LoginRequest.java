@@ -1,8 +1,15 @@
 package com.nqt.payload.request;
 
+import java.io.Serializable;
+
 import javax.validation.constraints.NotBlank;
 
-public class LoginRequest{
+public class LoginRequest implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	@NotBlank
 	private String username;
 	@NotBlank

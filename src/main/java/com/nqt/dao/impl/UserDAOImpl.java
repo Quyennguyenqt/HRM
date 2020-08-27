@@ -177,12 +177,12 @@ public class UserDAOImpl implements UserDAO {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append("Select e from User e where 1 = 1");
 			if (null != username || !("".equals(username))) {
-				queryStr.append(" and e.userName = :userName");
+				queryStr.append(" and e.username = :username");
 			}
 
 			try {
 				Query query = session.createQuery(queryStr.toString());
-				query.setParameter("userName", username);
+				query.setParameter("username", username);
 				list = query.getResultList();
 				if (list.isEmpty()) {
 					user = null;

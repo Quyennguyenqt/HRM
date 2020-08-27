@@ -18,6 +18,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+
 @Entity
 
 @Table(name = "aht_user", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
@@ -25,7 +26,8 @@ import javax.validation.constraints.Size;
 //@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
+	
 	private Long userId;
 
 	private String username;
@@ -64,7 +66,7 @@ public class User implements Serializable {
 		this.userId = userId;
 	}
 
-	@NotBlank(message = "username cannot be empty")
+	@NotBlank
 	@Size(max = 50)
 	@Column(name = "username", nullable = false)
 	public String getUsername() {
@@ -75,7 +77,7 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	@NotBlank(message = "password cannot be empty")
+	@NotBlank
 	@Size(max = 120)
 	@Column(name = "password", nullable = false)
 	public String getPassword() {
@@ -86,7 +88,7 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	@NotBlank(message = "email cannot be empty")
+	@NotBlank
 	@Size(max = 120)
 	@Email
 	@Column(name = "email", nullable = false)

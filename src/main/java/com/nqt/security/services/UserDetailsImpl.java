@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nqt.entities.User;
 
 public class UserDetailsImpl implements UserDetails {
-
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -38,52 +37,58 @@ public class UserDetailsImpl implements UserDetails {
 
 	public static UserDetailsImpl build(User user) {
 		List<GrantedAuthority> authorities = user.getUserRoles().stream()
-				.map(role -> new SimpleGrantedAuthority(role.getRole().getRoleName())).collect(Collectors.toList());
+				.map(role -> new SimpleGrantedAuthority(role.getRole().getRoleName()))
+				.collect(Collectors.toList());
 
-		return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getEmail(), user.getPassword(),
+		return new UserDetailsImpl(
+				user.getUserId(),
+				user.getUsername(), 
+				user.getEmail(),
+				user.getPassword(), 
 				authorities);
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return authorities;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+		return username;
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -95,5 +100,4 @@ public class UserDetailsImpl implements UserDetails {
 		UserDetailsImpl user = (UserDetailsImpl) o;
 		return Objects.equals(id, user.id);
 	}
-
 }

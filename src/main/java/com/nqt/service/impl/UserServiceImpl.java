@@ -34,11 +34,13 @@ public class UserServiceImpl implements UserService {
 		UserRole ur = new UserRole();
 		ur.setUser(user);
 		Role role = list.get(0).getRole();
-		if ( user.getUserRoles().isEmpty() || list.get(0).getRole() == null || role.getRoleId() == null) {
+		if ( list.get(0).getRole().getRoleName().equals(us)) {
 			role.setRoleId(US);
 			ur.setRole(role);
 			
-		} else {
+		} 
+		if(list.get(0).getRole().getRoleName().equals(admin)){
+			role.setRoleId(AD);
 			ur.setRole(role);
 			userDAO.addUserRole(ur);
 			role.setRoleId(US);
@@ -114,7 +116,7 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 }

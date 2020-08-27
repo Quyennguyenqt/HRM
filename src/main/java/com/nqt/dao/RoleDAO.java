@@ -14,4 +14,6 @@ public interface RoleDAO {
 	public Role getRoleById(Long id);
 
 	public void removeRole(Role role);
+	
+	
 }
