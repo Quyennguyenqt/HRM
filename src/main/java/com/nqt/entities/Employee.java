@@ -58,6 +58,7 @@ public class Employee implements Serializable{
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "department_id")
+	//@JsonProperty(access = Access.WRITE_ONLY)
 	private Department departmentId;
 	
 	//@ElementCollection(targetClass = ContracEmp.class)

@@ -10,50 +10,39 @@ import com.nqt.dao.DepartmentDAO;
 import com.nqt.entities.Department;
 import com.nqt.service.DepartmentService;
 
-
 @Service
 @Transactional
-public class DepartmentServiceImpl implements DepartmentService{
+public class DepartmentServiceImpl implements DepartmentService {
 	@Autowired
 	DepartmentDAO departDAO;
 
 	@Override
 	public void addDepartment(Department department) {
 		departDAO.addDepartment(department);
-		
+
 	}
-
-
 
 	@Override
 	public void updateDepartment(Department department) {
 		departDAO.updateDepartment(department);
-		
+
 	}
-
-
 
 	@Override
 	public List<Department> listDepartment() {
 		return departDAO.listDepartment();
 	}
 
-
-
 	@Override
 	public Department getDepartmentById(Long id) {
 		return departDAO.getDepartmentById(id);
 	}
 
-
-
 	@Override
 	public void removeDepartment(Department department) {
 		departDAO.removeDepartment(department);
-		
+
 	}
-
-
 
 	@Override
 	public boolean save(Department department, boolean b) {
@@ -74,7 +63,5 @@ public class DepartmentServiceImpl implements DepartmentService{
 		}
 		return false;
 	}
-
-	
 
 }

@@ -14,6 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 @Entity
 @Table(name = "aht_training")
 //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -40,7 +43,8 @@ public class Training implements Serializable {
 
 	@Column(name = "training_status")
 	private Integer traningStatus;
-
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "trainingId")
 	private Set<TrainningEmployee> trainEmp = new HashSet<TrainningEmployee>(0);
 

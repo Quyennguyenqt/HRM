@@ -1,11 +1,17 @@
 package com.nqt.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +23,7 @@ import com.nqt.service.EmployeeService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(value = "/api")
 public class EmployeeController {
 	@Autowired
 	EmployeeService empService;
@@ -30,7 +37,7 @@ public class EmployeeController {
 		return new ResponseEntity<>(emp, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/employees/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Employee> getEmployeetById(@PathVariable("id") Long id) {
 
 		Employee emp = empService.getEmployeeById(id);
@@ -48,8 +55,9 @@ public class EmployeeController {
 		return new ResponseEntity<Employee>(HttpStatus.NO_CONTENT);
 	}
 
-	@RequestMapping(value = "/employees", method = RequestMethod.PUT)
-	public ResponseEntity<Employee> updateEmployee(@RequestBody Employee emp) {
+	@RequestMapping(value = "/employees/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee emp) {
+		emp.setEmpId(id);
 		if (empService.save(emp, false)) {
 			return new ResponseEntity<>(emp, HttpStatus.OK);
 		}
@@ -57,13 +65,34 @@ public class EmployeeController {
 
 	}
 
-	@RequestMapping(value = "/employees", method = RequestMethod.DELETE)
-	public ResponseEntity<Employee> deleteEmployee(@RequestBody Employee emp) {
-		Employee empCurr = empService.getEmployeeById(emp.getEmpId());
+	@RequestMapping(value = "/employees/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Employee> deleteEmployee(@PathVariable("id") Long id) {
+		Employee empCurr = empService.getEmployeeById(id);
 		if (empCurr == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		empService.removeEmployee(empCurr);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/employees/export/pdf", produces = "application/text", method = RequestMethod.GET)
+	//@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<InputStreamResource> exportEmployeePdf() {
+		List<Employee> employees = empService.listEmployee();
+		
+		ByteArrayInputStream bais = empService.productPDFReport(employees);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=employee.pdf");
+		return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF)
+				.body(new InputStreamResource(bais));
+	}
+
+	@GetMapping(value = "/employees/export/excel", produces = "application/json")
+	public ResponseEntity<InputStreamResource> exportEmployeeExcel() throws IOException {
+		List<Employee> employees = empService.listEmployee();
+		ByteArrayInputStream bais = empService.productExcelReport(employees);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Content-Disposition", "inline; filename=employee.xlsx");
+		return ResponseEntity.ok().headers(headers).body(new InputStreamResource(bais));
 	}
 }

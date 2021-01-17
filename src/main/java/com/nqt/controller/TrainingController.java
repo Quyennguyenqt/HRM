@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,8 @@ import com.nqt.entities.Training;
 import com.nqt.service.TrainingService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
 public class TrainingController {
 
 	@Autowired
@@ -46,19 +49,20 @@ public class TrainingController {
 		return new ResponseEntity<Training>(HttpStatus.NO_CONTENT);
 	}
 
-	@RequestMapping(value = "/trainings", method = RequestMethod.PUT)
-	public ResponseEntity<Training> updateTraining(@RequestBody Training train) {
+	@RequestMapping(value = "/trainings/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Training> updateTraining(@PathVariable("id") Long id, @RequestBody Training train) {
+		train.setTrainingId(id);
 		if (trainService.save(train, false)) {
 			return new ResponseEntity<Training>(train, HttpStatus.OK);
 		}
 		return new ResponseEntity<Training>(HttpStatus.NO_CONTENT);
 	}
 
-	@RequestMapping(value = "/trainings", method = RequestMethod.DELETE)
-	public ResponseEntity<Training> deleteTraining(@RequestBody Training train) {
-		Training trainCurr = trainService.getTrainingById(train.getTrainingId());
+	@RequestMapping(value = "/trainings/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Training> deleteTraining(@PathVariable("id") Long id) {
+		Training trainCurr = trainService.getTrainingById(id);
 		if (trainCurr == null) {
-			return new ResponseEntity<Training>(train, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Training>(trainCurr, HttpStatus.NOT_FOUND);
 		}
 		trainService.removeTraining(trainCurr);
 		return new ResponseEntity<Training>(trainCurr, HttpStatus.OK);

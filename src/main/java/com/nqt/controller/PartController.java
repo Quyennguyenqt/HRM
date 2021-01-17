@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,8 @@ import com.nqt.entities.Part;
 import com.nqt.service.PartService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
 public class PartController {
 	@Autowired
 	PartService partService;
@@ -45,8 +48,9 @@ public class PartController {
 		return new ResponseEntity<Part>(HttpStatus.NO_CONTENT);
 	}
 
-	@RequestMapping(value = "/parts", method = RequestMethod.PUT)
-	public ResponseEntity<Part> updatePart(@RequestBody Part part) {
+	@RequestMapping(value = "/parts/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Part> updatePart(@PathVariable("id")Long id, @RequestBody Part part) {
+			part.setPartId(id);
 		if (partService.save(part, false)) {
 			return new ResponseEntity<>(part, HttpStatus.OK);
 		}
@@ -54,9 +58,9 @@ public class PartController {
 
 	}
 
-	@RequestMapping(value = "/parts", method = RequestMethod.DELETE)
-	public ResponseEntity<Part> deletePart(@RequestBody Part part) {
-		Part partCurretn = partService.getPartById(part.getPartId());
+	@RequestMapping(value = "/parts/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Part> deletePart(@PathVariable("id") Long id) {
+		Part partCurretn = partService.getPartById(id);
 		if (partCurretn == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

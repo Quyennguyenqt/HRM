@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,8 @@ import com.nqt.entities.Contract;
 import com.nqt.service.ContractService;
 
 @RestController
-//@RequestMapping("api/contracts")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
 public class ContractController {
 
 	@Autowired
@@ -51,17 +53,18 @@ public class ContractController {
 		return new ResponseEntity<Contract>(HttpStatus.NO_CONTENT);
 	}
 
-	@RequestMapping(value = "/contracts", method = RequestMethod.PUT)
-	public ResponseEntity<Contract> updateContract(@RequestBody Contract contract) {
+	@RequestMapping(value = "/contracts/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Contract> updateContract(@PathVariable("id") Long id, @RequestBody Contract contract) {
+		contract.setContractId(id);
 		if (contractService.save(contract, false)) {
 			return new ResponseEntity<Contract>(contract, HttpStatus.OK);
 		}
 		return new ResponseEntity<Contract>(HttpStatus.NO_CONTENT);
 	}
 	
-	@RequestMapping(value = "/contracts", method = RequestMethod.DELETE)
-	public ResponseEntity<Contract> deleteContract(@RequestBody Contract contract) {
-		Optional<Contract> contractCurr = Optional.of(contractService.getContractById(contract.getContractId()));
+	@RequestMapping(value = "/contracts/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Contract> deleteContract(@PathVariable("id") Long id) {
+		Optional<Contract> contractCurr = Optional.of(contractService.getContractById(id));
 		if (!contractCurr.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

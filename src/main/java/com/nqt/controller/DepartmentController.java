@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,8 @@ import com.nqt.entities.Department;
 import com.nqt.service.DepartmentService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
 public class DepartmentController {
 	
 	@Autowired
@@ -47,17 +50,18 @@ public class DepartmentController {
 		return new ResponseEntity<Department>(HttpStatus.NO_CONTENT);
 	}
 	
-	@RequestMapping(value = "/departments", method = RequestMethod.PUT)
-	public ResponseEntity<Department> updateDepartment(@RequestBody Department department) {
+	@RequestMapping(value = "/departments/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<Department> updateDepartment(@PathVariable("id") Long id, @RequestBody Department department) {
+		department.setDepartmentId(id);
 		if (departSerivce.save(department, false)) {
 			return new ResponseEntity<Department>(department, HttpStatus.OK);
 		}
 		return new ResponseEntity<Department>(HttpStatus.NO_CONTENT);
 	}
 	
-	@RequestMapping(value = "/departments")
-	public ResponseEntity<Department> deleteDepartment(@RequestBody Department department) {
-		Department departmentCurr = departSerivce.getDepartmentById(department.getDepartmentId());
+	@RequestMapping(value = "/departments/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Department> deleteDepartment(@PathVariable("id") Long id) {
+		Department departmentCurr = departSerivce.getDepartmentById(id);
 		if (departmentCurr == null) {
 			return new ResponseEntity<Department>(HttpStatus.NOT_FOUND);
 		}

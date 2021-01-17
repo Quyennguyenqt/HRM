@@ -16,6 +16,7 @@ import com.nqt.entities.Role;
 import com.nqt.service.RoleService;
 
 @RestController
+@RequestMapping("/api/auth")
 public class RoleController {
 	@Autowired
 	RoleService roleService;
